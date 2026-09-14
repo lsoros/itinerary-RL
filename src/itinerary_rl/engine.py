@@ -97,6 +97,50 @@ class Episode:
         self._reward = 0.0
         return self._observation()
 
+    def copy(self) -> Episode:
+        """Branch for search. The scorer is dropped; transitions stay the same."""
+        clone = Episode(
+            problem=self.problem,
+            index=self.index,
+            min_connection_minutes=self.min_connection_minutes,
+            step_cap=self.step_cap,
+            airport=self.airport,
+            weekday=self.weekday,
+            clock=self.clock,
+            resulting_airport=self.resulting_airport,
+            done=self.done,
+            ended=self.ended,
+            flights_taken=self.flights_taken,
+            steps_taken=self.steps_taken,
+            scorer=None,
+            _reward=0.0,
+        )
+        clone._anchor_weekday = self._anchor_weekday
+        clone._ready_offset = self._ready_offset
+        clone.records = list(self.records)
+        return clone
+
+    def legal_actions(self) -> list[Action]:
+        """Actions the engine would accept from this position. Sorted for determinism."""
+        if self.done:
+            return []
+        actions: list[Action] = []
+        for service in self.index:
+            if service.origin != self.airport:
+                continue
+            action = _action(service)
+            if self._is_legal(action):
+                actions.append(action)
+        actions.sort(
+            key=lambda action: (
+                action.dest,
+                action.marketing_carrier,
+                action.day_of_week,
+                action.scheduled_departure,
+            )
+        )
+        return actions
+
     def step(self, action: Action) -> Observation:
         if self.done:
             raise EpisodeError("episode has ended")

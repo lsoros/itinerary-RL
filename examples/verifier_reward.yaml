@@ -1,6 +1,6 @@
 terms:
   - name: cancellation_rate
-    weight: 1.0
+    weight: -1.0
     aggregate: any_leg
   - name: distance
     weight: -0.01
