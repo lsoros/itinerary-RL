@@ -7,7 +7,7 @@ name = "itinerary-rl"
 version = "0.1.0"
 description = "OpenEnv flight itinerary environment"
 requires-python = ">=3.12"
-dependencies = ["PyYAML>=6"]
+dependencies = ["PyYAML>=6", "openenv"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

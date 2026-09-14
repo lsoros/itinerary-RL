@@ -1,8 +1,8 @@
 """In-process episode. Resolves an action, or rejects it without crashing.
 
-The step reward is always zero in this slice. A later list of terms can replace
-that without changing the transition. The in-memory records are what a later
-log will write; this slice does not write a file.
+Attach a scorer to fill ``observation.reward``. Without one, the step reward
+stays zero and the transition does not change. The in-memory records are the
+trajectory; this module does not write a file.
 """
 
 from __future__ import annotations
