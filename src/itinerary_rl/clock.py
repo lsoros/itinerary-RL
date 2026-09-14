@@ -54,3 +54,8 @@ def offset_clock(offset_minutes: float) -> tuple[str, int]:
     day = int(offset_minutes // MINUTES_PER_DAY)
     minute = int(offset_minutes % MINUTES_PER_DAY)
     return format_hhmm(minute), day
+
+
+def shift_weekday(day_of_week: int, days: int) -> int:
+    """BTS weekday 1 = Monday. ``days`` may be negative."""
+    return (day_of_week - 1 + days) % 7 + 1
