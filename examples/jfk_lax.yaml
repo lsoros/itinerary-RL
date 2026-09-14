@@ -1,0 +1,14 @@
+origin_airport: JFK
+destination_airport: LAX
+carriers: ["AA"]
+max_connections: 1
+departures:
+  - day: Monday
+    start: "1100"
+    end: "1400"
+  - day: Tuesday
+    start: "0900"
+    end: "0900"
+  - day: Thursday
+    start: "1200"
+    end: "2000"

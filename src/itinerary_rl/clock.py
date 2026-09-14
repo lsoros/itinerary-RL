@@ -9,6 +9,21 @@ from __future__ import annotations
 MINUTES_PER_DAY = 24 * 60
 
 
+def normalize_hhmm(value: object) -> str:
+    """Accept 1100, "1100", and "11:00". Returns zero-padded HHMM."""
+    if isinstance(value, bool) or value is None:
+        raise ValueError(f"scheduled time is not HHMM: {value}")
+    if isinstance(value, int):
+        raw = str(value)
+    else:
+        raw = str(value).strip().replace(":", "")
+    if not raw.isdigit() or not 1 <= len(raw) <= 4:
+        raise ValueError(f"scheduled time is not HHMM: {value}")
+    hhmm = raw.zfill(4)
+    parse_hhmm(hhmm)
+    return hhmm
+
+
 def parse_hhmm(value: str) -> int:
     if len(value) != 4 or not value.isdigit():
         raise ValueError(f"scheduled time is not HHMM: {value}")
