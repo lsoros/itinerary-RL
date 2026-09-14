@@ -59,6 +59,7 @@ class StepRecord:
     ended: EndedReason | None
     observation: Observation
     action: Action | None = None
+    service: ServicePrototype | None = None
 
 
 @dataclass
@@ -133,22 +134,24 @@ class Episode:
         if service is None or service.ambiguous or service.status is None:
             return self._reject(action)
         if service.status == "cancelled":
-            return self._cancel(action)
+            return self._cancel(action, service)
         if service.status == "diverted":
             if not service.diversion_airport:
                 return self._reject(action)
             return self._land(
                 action,
+                service,
                 airport=service.diversion_airport,
                 arrival_offset=service.scheduled_arrival_offset_minutes,
             )
         return self._land(
             action,
+            service,
             airport=service.dest,
             arrival_offset=service.tracked_arrival_offset_minutes,
         )
 
-    def _cancel(self, action: Action) -> Observation:
+    def _cancel(self, action: Action, service: ServicePrototype) -> Observation:
         self.done = True
         self.ended = "cancelled"
         self.resulting_airport = self.airport
@@ -160,11 +163,19 @@ class Episode:
                 ended="cancelled",
                 observation=observation,
                 action=action,
+                service=service,
             )
         )
         return observation
 
-    def _land(self, action: Action, *, airport: str, arrival_offset: float | None) -> Observation:
+    def _land(
+        self,
+        action: Action,
+        service: ServicePrototype,
+        *,
+        airport: str,
+        arrival_offset: float | None,
+    ) -> Observation:
         offset = self._arrival_offset(action, arrival_offset)
         self.airport = airport
         self.flights_taken += 1
@@ -186,6 +197,7 @@ class Episode:
                 ended=ended,
                 observation=observation,
                 action=action,
+                service=service,
             )
         )
         return observation
