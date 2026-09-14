@@ -79,6 +79,8 @@ class Episode:
     _anchor_weekday: int | None = None
     _ready_offset: float | None = None
     records: list[StepRecord] = field(default_factory=list)
+    scorer: object | None = None
+    _reward: float = 0.0
 
     def reset(self) -> Observation:
         self.airport = self.problem.origin_airport
@@ -92,6 +94,7 @@ class Episode:
         self._anchor_weekday = None
         self._ready_offset = None
         self.records = []
+        self._reward = 0.0
         return self._observation()
 
     def step(self, action: Action) -> Observation:
@@ -111,6 +114,7 @@ class Episode:
         if self.steps_taken >= self.step_cap:
             self.done = True
             self.ended = ended = "step_cap"
+        self._reward = 0.0
         observation = self._observation()
         self.records.append(
             StepRecord(
@@ -155,6 +159,7 @@ class Episode:
         self.done = True
         self.ended = "cancelled"
         self.resulting_airport = self.airport
+        self._reward = self._step_reward(action, service, moved=False)
         observation = self._observation()
         self.records.append(
             StepRecord(
@@ -189,6 +194,7 @@ class Episode:
         if ended is not None:
             self.done = True
             self.ended = ended
+        self._reward = self._step_reward(action, service, moved=True)
         observation = self._observation()
         self.records.append(
             StepRecord(
@@ -237,6 +243,15 @@ class Episode:
         )
         return service is not None and not service.ambiguous and service.status is not None
 
+    def _step_reward(self, action: Action, service: ServicePrototype, *, moved: bool) -> float:
+        if self.scorer is None:
+            return 0.0
+        from itinerary_rl.terms import legs_from_episode, step_legs
+
+        before = legs_from_episode(self)
+        after = before + [step_legs(self.problem.origin_airport if not before else before[-1].dest, action, service, moved)]
+        return self.scorer.step_reward(before, after)
+
     def _departure_offset(self, action: Action) -> float:
         assert self._anchor_weekday is not None
         days = (action.day_of_week - self._anchor_weekday) % 7
@@ -271,7 +286,7 @@ class Episode:
             weekday=self.weekday,
             clock=self.clock,
             resulting_airport=self.resulting_airport,
-            reward=0.0,
+            reward=self._reward,
             done=self.done,
         )
 
