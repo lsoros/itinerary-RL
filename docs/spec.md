@@ -1,4 +1,4 @@
-# Itinerary environment
+# AI-Generated document: Itinerary environment
 
 Locked contract for the initial build. Training algorithms stay outside this system. The environment does not search and does not plan. The verifier does.
 
