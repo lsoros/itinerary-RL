@@ -46,6 +46,8 @@ terms:
     weight: -10.0
 ```
 
+## Installation
+
 Prerequisites for running the environment:
 
 - Python 3.12+ (3.12 recommended)
@@ -53,8 +55,6 @@ Prerequisites for running the environment:
 - Docker, only if you want the OpenEnv server in a container
 
 Paths below assume a Linux or WSL shell from the repo root.
-
-## Installation
 
 ```bash
 python -m venv .venv
@@ -64,7 +64,7 @@ pip install -e .
 
 Please note that `openenv` pulls a large dependency set, and installation may take awhile. 
 
-## Two ways to drive the environment
+## Running the environment
 
 ### 1. Python script
 
