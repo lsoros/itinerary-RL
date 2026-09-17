@@ -2,6 +2,12 @@
 
 This document is largely AI-generated.
 
+## What this system is
+
+An episode is a walk on a flight graph. Each step adds one leg, or rejects the request. A finished trajectory is an action sequence the verifier scores. Generated solutions are compared with a ground-truth path under the verifier's weights, not under the environment reward.
+
+Evaluations are deterministic. The same problem file, the same dataset, and the same actions always produce the same result. There is no sampled week, no per-leg random draw, and no hidden calendar date.
+
 ## System architecture
 
 ```mermaid
@@ -39,12 +45,6 @@ sequenceDiagram
 ```
 
 The OpenEnv server usually runs in Docker. Environment weights fill `observation.reward` on each step. Verifier weights are a separate list and are not written into the observation.
-
-## What this system is
-
-An episode is a walk on a flight graph. Each step adds one leg, or rejects the request. A finished trajectory is an action sequence the verifier scores. Generated solutions are compared with a ground-truth path under the verifier's weights, not under the environment reward.
-
-Evaluations are deterministic. The same problem file, the same dataset, and the same actions always produce the same result. There is no sampled week, no per-leg random draw, and no hidden calendar date.
 
 ## Dataset
 
