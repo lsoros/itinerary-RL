@@ -209,10 +209,4 @@ Useful while debugging the stack without OpenEnv:
 | `python -m itinerary_rl.engine PROBLEM.csv` | One legal nonstop (if any) and one illegal step |
 | `python -m itinerary_rl.trajectory ...` | Same demos as JSON trajectories |
 
-Each of these commands rebuilds the flight catalog index from the CSV when it needs one. That can take a minute on a large extract.
-
-## Dataset note
-
-Use the [BTS](https://transtats.bts.gov/) Marketing Carrier On-Time Performance field list. Keep the file outside git. January is enough to exercise the loader and engine; a multi-year extract is the same schema and the same commands.
-
-
+Each of these commands rebuilds the verifier's flight catalog index from the CSV when it needs one. That can take a minute on a large extract.
