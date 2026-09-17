@@ -27,6 +27,24 @@ departures:
     start: "1200"
     end: "2000"
 ```
+Reward and verifier signals are similarly specified via YAML:
+
+```yaml
+terms:
+  - name: cancellation_rate
+    weight: -1.0
+    aggregate: any_leg
+  - name: distance
+    weight: -0.01
+  - name: trip_time_scheduled
+    weight: 0
+  - name: trip_time_tracked
+    weight: 0
+  - name: distance_to_go
+    weight: 0
+  - name: invalid
+    weight: -10.0
+```
 
 Prerequisites for running the environment:
 
