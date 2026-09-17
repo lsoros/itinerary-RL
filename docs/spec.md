@@ -1,8 +1,44 @@
-# AI-Generated document: Itinerary environment
+# Itinerary environment
 
-Locked contract for the initial build. Training algorithms stay outside this system. The environment does not search and does not plan. The verifier does.
+# System architecture
 
-The runtime is OpenEnv, packaged for local Docker. Intended interpreter: Python 3.12.
+GitHub renders Mermaid on this page. The live path is OpenEnv reset/step. The verifier runs after the episode, not inside each step. The BTS extract is mounted into Docker when the server starts; it is not on the step path every time.
+
+```mermaid
+sequenceDiagram
+  participant Script as User script
+  participant Client as ItineraryClient
+  participant Server as OpenEnv server
+  participant Engine as Episode engine
+  participant Verifier as Verifier
+
+  Script->>Client: ItineraryClient(base_url=...)
+  Client->>Server: GET /health
+  Server-->>Client: 200 OK
+
+  Script->>Client: reset(problem)
+  Client->>Server: WS reset
+  Server->>Engine: reset()
+  Engine->>Engine: start episode at origin
+  Engine-->>Server: observation
+  Server-->>Client: StepResult JSON
+  Client-->>Script: StepResult
+
+  loop until done
+    Script->>Client: step(FlightAction)
+    Client->>Server: WS step
+    Server->>Engine: step(action)
+    Engine->>Engine: resolve flight, update position and clock
+    Engine-->>Server: observation plus environment reward
+    Server-->>Client: StepResult JSON
+    Client-->>Script: StepResult
+  end
+
+  Script->>Verifier: score trajectory / find ground truth
+  Verifier-->>Script: verifier score
+```
+
+The OpenEnv server usually runs in Docker. Environment weights fill `observation.reward` on each step. Verifier weights are a separate list and are not written into the observation.
 
 ## What this system is
 
