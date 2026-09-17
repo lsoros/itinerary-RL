@@ -26,7 +26,7 @@ sequenceDiagram
   Server-->>Client: StepResult JSON
   Client-->>Script: StepResult
 
-  loop until done
+  loop until episode terminates
     Script->>Client: step(FlightAction)
     Client->>Server: WS step
     Server->>Engine: step(action)
