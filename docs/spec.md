@@ -30,7 +30,7 @@ sequenceDiagram
     Script->>Client: step(FlightAction)
     Client->>Server: WS step
     Server->>Engine: step(action)
-    Engine->>Engine: resolve flight, update position and clock
+    Engine->>Engine: resolve flight leg, update traveler position and clock
     Engine-->>Server: observation plus environment reward
     Server-->>Client: StepResult JSON
     Client-->>Script: StepResult
