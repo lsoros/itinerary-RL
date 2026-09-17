@@ -1,6 +1,8 @@
 # Itinerary environment
 
-# System architecture
+This document is largely AI-generated.
+
+## System architecture
 
 GitHub renders Mermaid on this page. The live path is OpenEnv reset/step. The verifier runs after the episode, not inside each step. The BTS extract is mounted into Docker when the server starts; it is not on the step path every time.
 
